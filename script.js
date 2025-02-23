@@ -2,31 +2,27 @@ let detectKey = null;
 let lastPressTime = 0;
 let pressCount = 0;
 let doubleClickCount = 0;
-let doubleClickThreshold = 100; // Default double-click threshold in milliseconds
+let doubleClickThreshold = 100;
 let isChangingTime = false;
 
 document.addEventListener("keydown", function (event) {
-    if (isChangingTime) return; // Ignore key presses if changing time
+    if (isChangingTime) return;
 
     const currentTime = performance.now();
 
-    // If no key is being detected, set the key and update UI
     if (!detectKey) {
         detectKey = event.key;
         document.getElementById("instruction").innerText = `Detecting: "${detectKey}"`;
         document.getElementById("resetKey").style.display = "block";
     }
 
-    // If the pressed key matches the detected key
     if (event.key === detectKey) {
         pressCount++;
         document.getElementById("pressCount").innerText = pressCount;
 
-        // Calculate time difference since the last press
         let timeDiff = currentTime - lastPressTime;
 
-        // Log the time difference
-        let logText = (timeDiff / 1000).toFixed(8); // Convert to seconds
+        let logText = (timeDiff / 1000).toFixed(8);
         if (timeDiff <= doubleClickThreshold) {
             logText += " (double click)";
             document.querySelector(".neumorphic-box").style.boxShadow = "inset 6px 6px 10px rgba(255, 0, 0, 0.2), inset -6px -6px 10px rgba(255, 255, 255, 0.5)";
@@ -39,16 +35,13 @@ document.addEventListener("keydown", function (event) {
 
         lastPressTime = currentTime;
 
-        // Add log to the time logs
         document.getElementById("timeLogs").innerHTML += `<p>${logText}</p>`;
         document.getElementById("timeLogs").scrollTop = document.getElementById("timeLogs").scrollHeight;
     }
 });
 
-// Reset functionality
 document.getElementById("resetKey").addEventListener("click", resetAll);
 
-// Toggle time input container visibility
 document.getElementById("changeTime").addEventListener("click", function () {
     const timeInputContainer = document.getElementById("timeInputContainer");
     if (timeInputContainer.style.display === "block") {
@@ -60,7 +53,6 @@ document.getElementById("changeTime").addEventListener("click", function () {
     }
 });
 
-// Save new double-click threshold
 document.getElementById("saveTime").addEventListener("click", function () {
     let newTime = document.getElementById("timeInput").value;
     if (newTime !== null && !isNaN(newTime) && newTime > 0) {
@@ -71,7 +63,6 @@ document.getElementById("saveTime").addEventListener("click", function () {
     resetAll();
 });
 
-// Reset all values and UI
 function resetAll() {
     detectKey = null;
     lastPressTime = 0;
